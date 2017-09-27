@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+
+from django.shortcuts import render
+
 from django.views.decorators.csrf import csrf_exempt
 
 from banking_actions import CreditCard
@@ -32,5 +34,4 @@ def account_ledgers(request, account_id):
     apply logic to figure out what ledger should the transaction data go into.
     """
     retrieved_ledgers = CreditCard.get_account_ledgers(account_id)
-    response = JsonResponse(retrieved_ledgers)
-    return HttpResponse(response)
+    return render(request, 'accounts/ledgers.html', retrieved_ledgers)
