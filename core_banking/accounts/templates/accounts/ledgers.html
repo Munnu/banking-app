@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Ledger for Account #{{ account_id }}</title>
+    </head>
+    <body>
+        <h1>Account {{ account_id }} Ledgers</h1>
+        <table border="1" style="float: left; margin-right:20px;">
+            <thead>
+
+            <tr>
+                <th colspan="2">Cash-Out</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>Debit</td>
+                <td>Credit</td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        {% for value in cash_out.debit %}
+                            <li>{{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for value in cash_out.credit %}
+                            <li>{{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+        <table border="1" style="float: clear;">
+            <thead>
+
+            <tr>
+                <th colspan="2">Principal</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>Debit</td>
+                <td>Credit</td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        {% for value in principal.debit %}
+                            <li>{{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for value in principal.credit %}
+                            <li>{{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
