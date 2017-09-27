@@ -55,21 +55,22 @@ class CreditCard(object):
     @staticmethod
     def submit_transaction(account_id, purchase_amount):
         try:
-            # check to see if account exists in the database
-            account = Accounts.objects.get(account_id=account_id)
+            if purchase_amount > 0:  # we will ignore purchases that are 0
+                # check to see if account exists in the database
+                account = Accounts.objects.get(account_id=account_id)
 
-            if account:
-                # now that account has been found, find all the transactions associated and populate the list
-                transaction_applied = Journals(purchase_amount=purchase_amount, account=account)
-                transaction_applied.save()
+                if account:
+                    # now that account has been found, find all the transactions associated and populate the list
+                    transaction_applied = Journals(purchase_amount=purchase_amount, account=account)
+                    transaction_applied.save()
 
-                account.principal += transaction_applied.purchase_amount
-                account.save()
-            return {
-                'tansaction_id': transaction_applied.transaction_id,
-                'purchase_amount': transaction_applied.purchase_amount,
-                'principal': account.principal
-            }
+                    account.principal += transaction_applied.purchase_amount
+                    account.save()
+                    return {
+                        'transaction_id': transaction_applied.transaction_id,
+                        'purchase_amount': transaction_applied.purchase_amount,
+                        'principal': account.principal
+                    }
         except ObjectDoesNotExist:
             return {"error": "Transaction couldn't be processed"}
 
@@ -83,7 +84,7 @@ class CreditCard(object):
 
         new_journal = Journals(
             transaction_type=cls.TRANSACTION_TYPES[0],
-            customer=new_customer, account=new_account)
+            account=new_account)
         new_journal.save()
 
         new_account_json = {'account_id': new_account.account_id}
@@ -93,21 +94,22 @@ class CreditCard(object):
     def get_account_ledgers(cls, account_id):
         try:
             transactions_query = Journals.objects.filter(account_id=account_id).order_by('-timestamp')
-            ledgers = {}
-            ledgers['cash-out'] = {}
-            ledgers['cash-out']['debit'] = []
-            ledgers['cash-out']['credit'] = []
+            if transactions_query:
+                ledgers = {}
+                ledgers['account_id'] = account_id
+                ledgers['cash_out'] = {}
+                ledgers['cash_out']['debit'] = []
+                ledgers['cash_out']['credit'] = []
 
-            ledgers['principal'] = {}
-            ledgers['principal']['debit'] = []
-            ledgers['principal']['credit'] = []
-            for transaction in transactions_query:
-                print "This is transaction_type", transaction.transaction_type
-                if transaction.transaction_type == cls.TRANSACTION_TYPES[2]:  # a purchase
-                    ledgers['cash-out']['debit'].append(transaction.purchase_amount)
-                    ledgers['principal']['credit'].append(transaction.purchase_amount)
-                elif transaction.transaction_type is cls.TRANSACTION_TYPES[1]:  # a payment
-                    pass  # ignoring this logic for now since it's not a requirement
-            return ledgers
+                ledgers['principal'] = {}
+                ledgers['principal']['debit'] = []
+                ledgers['principal']['credit'] = []
+                for transaction in transactions_query:
+                    if transaction.transaction_type == cls.TRANSACTION_TYPES[2]:  # a purchase
+                        ledgers['cash_out']['debit'].append(transaction.purchase_amount)
+                        ledgers['principal']['credit'].append(transaction.purchase_amount)
+                return ledgers
+            else:
+                raise ObjectDoesNotExist({"error": "No Such Account Exists"})
         except ObjectDoesNotExist:
             return {"error": "Transaction couldn't be processed"}
