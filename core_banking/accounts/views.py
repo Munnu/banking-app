@@ -19,7 +19,7 @@ def account_index(request):  # this will hold the POST response to add a new acc
         response = JsonResponse(new_credit_card_account)
         return response
     else:  # GET
-        return HttpResponse("No account ID has been provided for %s" % request.method)
+        return HttpResponse("No account ID has been provided for %s" % request.method, status=405)  # method not allowed
 
 
 def account_view(request, account_id):  # this will hold the GET response to show the account at whatever ID
