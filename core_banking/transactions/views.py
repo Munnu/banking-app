@@ -22,4 +22,4 @@ def transactions_process(request):
 
         return response
     else:
-        return HttpResponse("GET not available for transactions endpoint.")
+        return HttpResponse("GET not available for transactions endpoint.", status=405)  # method not allowed
