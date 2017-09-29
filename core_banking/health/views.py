@@ -5,4 +5,4 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 def index(request):
-    return HttpResponse(200)  # returns 200 to ensure the server is up and running
+    return HttpResponse(200, status=200)  # returns 200 to ensure the server is up and running
