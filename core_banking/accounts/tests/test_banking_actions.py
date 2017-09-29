@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.core.exceptions import ObjectDoesNotExist
 
 from accounts.banking_actions import CreditCard
 from accounts.models import Accounts, Customers
@@ -73,4 +72,3 @@ class BankingTransactionTestCase(TestCase):
                                                                   purchase_amount)
         # check to see if the dictionary has one of the expected fields
         self.assertTrue(account_transaction["error"], "Transaction couldn't be processed")
-        
