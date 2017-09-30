@@ -16,6 +16,8 @@ class BankingTransactionTestCase(TestCase):
                                                             account=self.test_account)
 
     def test_add_customer(self):
+        """Tests the method that adds a customer into the database.
+        Verifies if the account_id type is an integer."""
         account_number = self.customer_cc.add_customer()
 
         # check to see if you get an integer back
@@ -23,6 +25,8 @@ class BankingTransactionTestCase(TestCase):
 
     # ====================================================
     def test_get_account_ledgers(self):
+        """Tests the method that gets a customer's account ledger from the database.
+        Verifies if part of the dictionary criteria is returned back upon completion."""
         account_ledger = self.customer_cc.get_account_ledgers(self.test_account.account_id)
 
         # check to see if the dictionary has one of the expected fields
@@ -30,6 +34,8 @@ class BankingTransactionTestCase(TestCase):
         self.assertTrue(dict_key_exist, True)
 
     def test_get_account_ledgers_account_doesnt_exist(self):
+        """Tests the method that gets an account ledger for an account that does not exist.
+        Verifies a failure."""
         account_id = 200  # this account should not exist
         account_ledger = self.customer_cc.get_account_ledgers(account_id)
 
@@ -37,18 +43,24 @@ class BankingTransactionTestCase(TestCase):
         self.assertTrue(account_ledger["error"], "Transaction couldn't be processed")
 
     def test_get_account_ledgers_garbage_account_param(self):
+        """Tests the method that gets an account ledger for a different data type than expected.
+        Verifies a failure."""
         # check to see if the dictionary has one of the expected fields
         with self.assertRaises(ValueError):
             self.customer_cc.get_account_ledgers("Not even a proper account id")
 
     # ====================================================
     def test_get_account_data(self):
+        """Tests the method that gets account data for one of the accounts in the database.
+        Verifies if part of the dictionary criteria is returned back upon completion."""
         account_data = self.customer_cc.get_account_data(self.test_account.account_id)
         # check to see if the dictionary has one of the expected fields
         dict_key_exist = ('principal' in account_data) and ('transactions' in account_data)
         self.assertTrue(dict_key_exist, True)
 
     def test_get_account_data_account_doesnt_exist(self):
+        """Tests the method that gets an account data for an account that does not exist.
+        Verifies a failure."""
         account_id = 200  # this account should not exist
         account_data = self.customer_cc.get_account_data(account_id)
 
@@ -57,6 +69,8 @@ class BankingTransactionTestCase(TestCase):
 
     # ====================================================
     def test_submit_transaction(self):
+        """Tests the method that submits a transaction for an account.
+        Verifies a success."""
         purchase_amount = 20
         account_transaction = self.customer_cc.submit_transaction(
                                                                   self.test_account.account_id,
@@ -65,6 +79,8 @@ class BankingTransactionTestCase(TestCase):
         self.assertTrue(dict_key_exist, True)
 
     def test_submit_transaction_account_doesnt_exist(self):
+        """Tests the method that submits a transaction for an account that does not exist.
+        Verifies a failure."""
         account_id = 200  # this account should not exist
         purchase_amount = 10
         account_transaction = self.customer_cc.submit_transaction(

@@ -13,6 +13,7 @@ from accounts.banking_actions import  CreditCard
 
 @csrf_exempt
 def transactions_process(request):
+    """POST request to create a new transaction for the user based on account id."""
     if request.method == 'POST':  # POST is for creating a new account
         request_body = json.loads(request.body)
         account_id = request_body['account_id']

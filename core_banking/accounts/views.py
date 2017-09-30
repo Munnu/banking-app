@@ -13,6 +13,7 @@ from banking_actions import CreditCard
 
 @csrf_exempt  # for now, using csrf_exempt to bypass POST complaint
 def account_index(request):  # this will hold the POST response to add a new account entry
+    """POST request for creating a new user banking account."""
     if request.method == 'POST':  # POST is for creating a new account
         # call to create our new entry
         new_credit_card_account = CreditCard.add_customer()
@@ -23,6 +24,8 @@ def account_index(request):  # this will hold the POST response to add a new acc
 
 
 def account_view(request, account_id):  # this will hold the GET response to show the account at whatever ID
+    """GET request for account id, gives back the transactions 
+    associated with account and other account data."""
     # call to get an account
     retrieved_account = CreditCard.get_account_data(account_id)
     response = JsonResponse(retrieved_account)

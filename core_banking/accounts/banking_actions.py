@@ -23,6 +23,9 @@ class CreditCard(object):
         
         :param account_id
         :type integer
+        
+        :returns dictionary containing account_id, account principal, and all account transactions.
+        :exception ObjectDoesNotExist
         """
         try:
             # check to see if account exists in the database
@@ -54,13 +57,27 @@ class CreditCard(object):
 
     @staticmethod
     def submit_transaction(account_id, purchase_amount):
+        """submit_transaction static method gets the account_id and purchase_amount
+        from the frontend then checks to see if the account exists in the database.
+        It will create a new transaction entry in the database, and then will return
+        the transaction_id, purchase_amount, and account total.
+
+        :param account_id
+        :type integer
+        
+        :param purchase_amount
+        :type integer/float
+        
+        :returns dictionary containing transaction_id, purchase_amount, account principal.
+        :exception ObjectDoesNotExist
+        """
         try:
             if purchase_amount > 0:  # we will ignore purchases that are 0
                 # check to see if account exists in the database
                 account = Accounts.objects.get(account_id=account_id)
 
                 if account:
-                    # now that account has been found, find all the transactions associated and populate the list
+                    # now that account has been found, create a transaction in the database
                     transaction_applied = Journals(purchase_amount=purchase_amount, account=account)
                     transaction_applied.save()
 
@@ -76,6 +93,11 @@ class CreditCard(object):
 
     @classmethod
     def add_customer(cls):
+        """add_customer class method creates a new customer and account entry in the database.
+        Additionally, a new account transaction will be created in the database.
+
+        :returns dictionary containing the account_id for the newly created customer account.
+        """
         new_customer = Customers()
         new_customer.save()
 
@@ -92,6 +114,16 @@ class CreditCard(object):
 
     @classmethod
     def get_account_ledgers(cls, account_id):
+        """get_account_ledgers method gets the account_id from the frontend
+        then checks to see if there are any transactions inside of the transactions table
+        that is associated with the account_id and return the transactions associated if found.
+
+        :param account_id
+        :type integer
+        
+        :returns dictionary containing transaction data
+        :exception ObjectDoesNotExist
+        """
         try:
             transactions_query = Journals.objects.filter(account_id=account_id).order_by('-timestamp')
             if transactions_query:
